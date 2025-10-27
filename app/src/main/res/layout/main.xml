@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "System Settings"
+        android:onClick="goToSettings"
+        />
+    <Button
+        android:id="@+id/enable_wifi_adb_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "Enable WiFi ADB"
+        android:onClick="enableWiFiADB"
+        />
+    <TextView
+        android:id="@+id/grant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="adb shell pm grant mobi.omegacentauri.gotosettings_adb android.permission.WRITE_SECURE_SETTINGS" />
+    <TextView
+        android:id="@+id/adb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""/>
+    <Button
+        android:id="@+id/ipd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "No IPD message"
+        android:onClick="noIPDMessage"
+        />
+
+</LinearLayout>

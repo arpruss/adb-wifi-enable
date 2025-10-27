@@ -1,0 +1,1 @@
+pm grant mobi.omegacentauri.gotosettings_adb433 android.permission.WRITE_SECURE_SETTINGS
