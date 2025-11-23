@@ -8,6 +8,8 @@
 
     <!-- required to read the LAN IP address -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
     <!-- required to read the LAN IP address -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -31,7 +33,7 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <application
         android:allowBackup="true"
-        android:label="ADB Go To Settings"
+        android:label="ADB Scripts"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true">
         <activity android:name=".gotosettings_adb"
