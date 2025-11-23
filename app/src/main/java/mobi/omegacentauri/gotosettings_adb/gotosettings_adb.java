@@ -52,6 +52,7 @@ public class gotosettings_adb extends Activity {
     static final String SECURE_CONNECT = "_adb_secure_connect._tcp.local.";
     static final String TLS_PAIR = "_adb-tls-pairing._tcp.local.";
     static final String SECURE_PAIR = "_adb-tls-pairing._tcp.local.";
+    static final int BUTTONS_PER_LINE = 4;
 
     InetAddress address = null;
     int port = -1;
@@ -142,6 +143,8 @@ public class gotosettings_adb extends Activity {
             outputData += storage.getAbsolutePath()+" "+storage.isDirectory()+"\n";
             File[] files = storage.listFiles();
             Arrays.sort(files);
+            int n = 0;
+            LinearLayout line = null;
             for (File f : files) {
                 b = new Button(this);
                 b.setText(f.getName());
@@ -151,7 +154,13 @@ public class gotosettings_adb extends Activity {
                         runScript(f);
                     }
                 });
-                scriptsView.addView(b);
+                if (n % BUTTONS_PER_LINE == 0) {
+                    line = new LinearLayout(this);
+                    line.setOrientation(LinearLayout.HORIZONTAL);
+                    scriptsView.addView(line);
+                }
+                line.addView(b);
+                n++;
             }
         }
         catch (Exception e) {

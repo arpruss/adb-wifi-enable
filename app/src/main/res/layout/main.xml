@@ -160,7 +160,7 @@
     <ScrollView
         android:id="@+id/output_scroller"
         android:layout_width="fill_parent"
-        android:layout_height="120sp"
+        android:layout_height="240sp"
         android:scrollbars="vertical"
         android:fillViewport="true">
     <TextView
