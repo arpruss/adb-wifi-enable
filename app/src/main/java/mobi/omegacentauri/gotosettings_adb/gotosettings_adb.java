@@ -246,7 +246,18 @@ public class gotosettings_adb extends Activity {
     }
 
     public void goToSettings(View view) {
-        Intent i = new Intent();
+        PackageManager pm = getPackageManager();
+        Intent i = pm.getLaunchIntentForPackage("com.android.settings");
+        if (i == null) {
+            i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:com.android.settings"));
+            i.setPackage("com.android.settings");
+        }
+
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >=24) i.addFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
+        startActivity(i);
+        /*
         if (isPackageInstalled("com.android.settings"))
             i.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings"));
         else
@@ -256,6 +267,8 @@ public class gotosettings_adb extends Activity {
         if (Build.VERSION.SDK_INT >=24) i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
         startActivity(i);
         //finish();
+
+         */
     }
 
     public void closeListen() {
