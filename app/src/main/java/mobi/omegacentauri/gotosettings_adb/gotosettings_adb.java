@@ -170,9 +170,16 @@ public class gotosettings_adb extends Activity {
         //Log.v(TAG, String.valueOf(Environment.getExternalStorageDirectory()));
     }
 
+    String getName(int port) {
+        if (address != null)
+            return "127.0.0.1:"+port; //address.getHostName()
+        else
+            return "!27.0.0.1:"+port;
+    }
+
     private void runScript(File f) {
         List<String> cmds = new ArrayList<>();
-        cmds.add("adb connect "+address.getHostName() + ":" + port);
+        cmds.add("adb connect "+getName(port));
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             while(true) {
@@ -180,7 +187,7 @@ public class gotosettings_adb extends Activity {
                 if (line == null)
                     break;
                 if (line.startsWith("adb ")) {
-                    line = "adb -s "+address.getHostName()+":"+port+" "+line.substring(4);
+                    line = "adb -s "+getName(port)+" "+line.substring(4);
                 }
                 cmds.add(line);
             }
@@ -419,7 +426,7 @@ public class gotosettings_adb extends Activity {
                 else
                     pairPortField.setText("");
                 if (port >= 0) {
-                    adbText.setText(address.getHostAddress() + ":" + port);
+                    adbText.setText(address.getHostName()+":"+port);
                     scriptsView.setVisibility(View.VISIBLE);
                     enableWiFiADBButton.setVisibility(View.INVISIBLE);
                 }
@@ -443,7 +450,7 @@ public class gotosettings_adb extends Activity {
 
     public void noIPDMessage(View view) {
         if (port >= 0) {
-            String cmd1 = "adb connect "+address.getHostName() + ":" + port;
+            String cmd1 = "adb connect "+getName(port);
             String cmd2 = "adb shell setprop debug.oculus.noIpdNotifier 1";
             new Thread(new Runnable() {
                 @Override
@@ -527,7 +534,7 @@ public class gotosettings_adb extends Activity {
     public void pair(View view) {
         String cmd1 = "adb kill-server";
         String cmd2 = "adb pair "+address.getHostName()+":"+pairPortField.getText()+" "+String.valueOf(pinField.getText());
-        String cmd3 = "adb connect " + address.getHostName() + ":" + port;
+        String cmd3 = "adb connect " + getName(port);
         String cmd4 = "adb shell pm grant mobi.omegacentauri.gotosettings_adb android.permission.WRITE_SECURE_SETTINGS";
 
         new Thread(new Runnable() {
