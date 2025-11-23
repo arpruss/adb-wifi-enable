@@ -83,6 +83,7 @@ public class gotosettings_adb extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         options = PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.main);
@@ -193,6 +194,7 @@ public class gotosettings_adb extends Activity {
         super.onStart();
 
         checkPermissions();
+        enableWiFiADB(false);
         updateAddressPort();
         listen();
         outputData = "";
@@ -207,6 +209,21 @@ public class gotosettings_adb extends Activity {
     }
 
     public void enableWiFiADB(View view) {
+        enableWiFiADB(true);
+    }
+
+    public void enableWiFiADB(boolean force) {
+        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M
+                && PackageManager.PERMISSION_DENIED ==
+                checkSelfPermission("android.permission.WRITE_SECURE_SETTINGS"))
+            return;
+
+        if (! force) {
+            int enabled = Settings.Global.getInt(getContentResolver(), "adb_wifi_enabled", 0);
+            if (enabled == 1)
+                return;
+        }
+
         Log.v(TAG, "must enable");
         if (! wifi() ) {
             Log.v(TAG, "enabling wifi");
@@ -298,7 +315,6 @@ public class gotosettings_adb extends Activity {
 
     public void listen() {
         closeListen();
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (lock == null) {
             lock = wifiManager.createMulticastLock("jmdns_multicast_lock");
             lock.setReferenceCounted(true);
