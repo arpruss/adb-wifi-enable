@@ -44,7 +44,7 @@ import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceListener;
 
 public class gotosettings_adb extends Activity {
-    static final String TLS_CONNECT = "_adb-tls-connect._tcp.local.";
+    static final String TLS_CONNECT =  "_adb-tls-connect._tcp.local.";
     static final String SECURE_CONNECT = "_adb_secure_connect._tcp.local.";
     static final String TLS_PAIR = "_adb-tls-pairing._tcp.local.";
     static final String SECURE_PAIR = "_adb-tls-pairing._tcp.local.";
