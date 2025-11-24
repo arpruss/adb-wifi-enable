@@ -1,13 +1,10 @@
 package mobi.omegacentauri.gotosettings_adb;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -19,19 +16,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,7 +62,6 @@ public class gotosettings_adb extends Activity {
     private String adbPath;
     private SharedPreferences options;
     private Button enableWiFiADBButton;
-    private TextView grantText;
     private WifiManager wifiManager;
     private WifiManager.MulticastLock lock = null;
     private boolean listening = false;
@@ -80,10 +75,12 @@ public class gotosettings_adb extends Activity {
     private Button pairButton;
     private TextView pinField;
     private TextView pairPortField;
+    private TextView pressOpen;
     private LinearLayout pairControls;
     private TextView output;
     private ScrollView outputScroller;
-    private LinearLayout scriptsView;
+    private List<LinearLayout> buttonLines = new ArrayList<>();
+    private TableLayout scriptsTable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,7 +91,7 @@ public class gotosettings_adb extends Activity {
 
         setContentView(R.layout.main);
 
-        scriptsView = (LinearLayout)findViewById(R.id.scripts);
+        scriptsTable = (TableLayout) findViewById(R.id.scripts_table);
         enableWiFiADBButton = findViewById(R.id.enable_wifi_adb_button);
         //grantText = findViewById(R.id.grant);
         adbText = findViewById(R.id.adb);
@@ -105,7 +102,10 @@ public class gotosettings_adb extends Activity {
         pairControls = (LinearLayout) findViewById(R.id.pair_controls);
         output = (TextView)findViewById(R.id.output);
         outputScroller = (ScrollView)findViewById(R.id.output_scroller);
+        pressOpen = (TextView)findViewById(R.id.press_open);
     }
+
+
 
     void checkPermissions() {
         runOnUiThread(new Runnable() {
@@ -138,10 +138,11 @@ public class gotosettings_adb extends Activity {
             File[] files = storage.listFiles();
             Arrays.sort(files);
             int n = 0;
-            LinearLayout line = null;
+            TableRow row = null;
             for (File f : files) {
                 b = new Button(this);
                 b.setAllCaps(false);
+                b.setMaxLines(1);
                 b.setText(f.getName());
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -149,12 +150,12 @@ public class gotosettings_adb extends Activity {
                         runScript(f);
                     }
                 });
+
                 if (n % BUTTONS_PER_LINE == 0) {
-                    line = new LinearLayout(this);
-                    line.setOrientation(LinearLayout.HORIZONTAL);
-                    scriptsView.addView(line);
+                    row = new TableRow(this);
+                    scriptsTable.addView(row);
                 }
-                line.addView(b);
+                row.addView(b);
                 n++;
             }
         }
@@ -194,6 +195,8 @@ public class gotosettings_adb extends Activity {
     protected void onStart() {
         super.onStart();
 
+        pressOpen.setVisibility(View.INVISIBLE);
+
         connectMode = CONNECT_UNKNOWN;
 
         checkPermissions();
@@ -201,7 +204,8 @@ public class gotosettings_adb extends Activity {
         updateAddressPort();
         listen();
         outputData = "";
-        scriptsView.removeAllViews();
+        buttonLines.clear();
+        scriptsTable.removeAllViews();
         addButtons();
     }
 
@@ -303,6 +307,16 @@ public class gotosettings_adb extends Activity {
             i.setPackage(SETTINGS);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             startActivity(i);
+            pressOpen.setVisibility(View.VISIBLE);
+            pressOpen.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        pressOpen.setVisibility(View.GONE);
+                    }
+                    catch(Exception e) {}
+                }
+            }, 5000);
         }
     }
 
@@ -440,20 +454,20 @@ public class gotosettings_adb extends Activity {
                     String s = address.getHostAddress()+":"+port;
                     if (connectMode == CONNECT_FAILED) {
                         s += ". Connection failed. Try pairing in the system developer wireless debugging settings.";
-                        scriptsView.setVisibility(View.VISIBLE);
+                        scriptsTable.setVisibility(View.VISIBLE);
                         enableWiFiADBButton.setVisibility(View.VISIBLE);
                         enableWiFiADBButton.setEnabled(true);
                     }
                     else {
                         if (connectMode == CONNECT_SUCCESS)
                             s += ". Connection succeeded.";
-                        scriptsView.setVisibility(View.VISIBLE);
+                        scriptsTable.setVisibility(View.VISIBLE);
                         enableWiFiADBButton.setVisibility(View.INVISIBLE);
                     }
                     adbText.setText(s);
                 }
                 else {
-                    scriptsView.setVisibility(View.GONE);
+                    scriptsTable.setVisibility(View.GONE);
                     enableWiFiADBButton.setVisibility(View.VISIBLE);
                     if (isWriteSecureGranted()) {
                         adbText.setText("");
@@ -502,6 +516,7 @@ public class gotosettings_adb extends Activity {
                 continue;
             Log.v(TAG,cmd);
             outputData += ">" + cmd + "\n";
+            scrollOutput();
             boolean connecting = cmd.substring(4).startsWith("connect ");
             if (connecting) {
                 Log.v(TAG, "connecting");
@@ -539,6 +554,7 @@ public class gotosettings_adb extends Activity {
                 }
                 if (line != null) {
                     outputData += line + "\n";
+                    scrollOutput();
                 }
                 else
                     break;
@@ -546,7 +562,6 @@ public class gotosettings_adb extends Activity {
             if (connecting && connectMode == CONNECT_FAILED)
                 break;
         }
-        scrollOutput();
         updateAddressPort();
     }
 

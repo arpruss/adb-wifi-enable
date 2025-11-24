@@ -17,6 +17,12 @@
         android:text = "System Settings"
         android:onClick="goToSettings"
         />
+    <TextView
+        android:id="@+id/press_open"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "Press [Open] to launch Settings"/>
     <Button
         android:id="@+id/enable_wifi_adb_button"
         android:layout_width="wrap_content"
@@ -146,17 +152,14 @@
         android:text=""/>
     <LinearLayout
         android:id="@+id/scripts"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-<!--    <Button
-        android:id="@+id/ipd"
-        android:layout_width="wrap_content"
+        android:orientation="vertical"/>
+    <TableLayout
+        android:id="@+id/scripts_table"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text = "No IPD message"
-        android:onClick="noIPDMessage"
-        /> -->
-    </LinearLayout>
+        />
     <ScrollView
         android:id="@+id/output_scroller"
         android:layout_width="fill_parent"
