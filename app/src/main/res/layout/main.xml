@@ -134,11 +134,11 @@
                 android:onClick="keyX"/>
         </LinearLayout>
     </LinearLayout>
-    <TextView
+<!--    <TextView
         android:id="@+id/grant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="adb shell pm grant mobi.omegacentauri.gotosettings_adb android.permission.WRITE_SECURE_SETTINGS" />
+        android:text="adb shell pm grant mobi.omegacentauri.gotosettings_adb android.permission.WRITE_SECURE_SETTINGS" /> -->
     <TextView
         android:id="@+id/adb"
         android:layout_width="wrap_content"

@@ -1,0 +1,7 @@
+adb shell setprop debug.oculus.noIpdNotifier 1
+adb shell am force-stop com.oculus.explore
+adb shell am force-stop com.oculus.socialplatform
+adb shell setprop debug.oculus.textureWidth 1832
+adb shell setprop debug.oculus.textureHeight 1920
+
+adb shell cmd connectivity airplane-mode enable

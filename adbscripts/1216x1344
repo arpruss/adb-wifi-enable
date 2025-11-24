@@ -1,0 +1,3 @@
+adb shell setprop debug.oculus.textureWidth 1832
+adb shell setprop debug.oculus.textureHeight 1920
+
