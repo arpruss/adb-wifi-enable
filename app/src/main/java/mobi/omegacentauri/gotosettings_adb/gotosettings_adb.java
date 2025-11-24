@@ -52,6 +52,7 @@ public class gotosettings_adb extends Activity {
     static final String SECURE_CONNECT = "_adb_secure_connect._tcp.local.";
     static final String TLS_PAIR = "_adb-tls-pairing._tcp.local.";
     static final String SECURE_PAIR = "_adb-tls-pairing._tcp.local.";
+    static final String SETTINGS = "com.android.settings";
     static final String ADB_GRANT = "adb shell pm grant mobi.omegacentauri.gotosettings_adb android.permission.WRITE_SECURE_SETTINGS";
     static final int BUTTONS_PER_LINE = 4;
 
@@ -167,7 +168,7 @@ public class gotosettings_adb extends Activity {
         if (address != null)
             return "127.0.0.1:"+port; //address.getHostName()
         else
-            return "!27.0.0.1:"+port;
+            return "127.0.0.1:"+port;
     }
 
     private void runScript(File f) {
@@ -291,28 +292,18 @@ public class gotosettings_adb extends Activity {
 
     public void goToSettings(View view) {
         PackageManager pm = getPackageManager();
-        Intent i = pm.getLaunchIntentForPackage("com.android.settings");
-        if (i == null) {
-            i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:com.android.settings"));
-            i.setPackage("com.android.settings");
+        try {
+            Intent i = pm.getLaunchIntentForPackage(SETTINGS);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            startActivity(i);
         }
-
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (Build.VERSION.SDK_INT >=24) i.addFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
-        startActivity(i);
-        /*
-        if (isPackageInstalled("com.android.settings"))
-            i.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings"));
-        else
-            i.setComponent(new ComponentName("com.oculus.panelapp.settings", "com.oculus.panelapp.settings.SettingsActivity"));
-
-        //        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        if (Build.VERSION.SDK_INT >=24) i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
-        startActivity(i);
-        //finish();
-
-         */
+        catch(Exception e) {
+            Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + SETTINGS));
+            i.setPackage(SETTINGS);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            startActivity(i);
+        }
     }
 
     public void closeListen() {
