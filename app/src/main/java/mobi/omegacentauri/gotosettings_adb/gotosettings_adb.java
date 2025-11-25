@@ -33,8 +33,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,6 +49,7 @@ import javax.jmdns.ServiceListener;
 public class gotosettings_adb extends Activity {
     static final String TLS_CONNECT =  "_adb-tls-connect._tcp.local.";
     static final String SECURE_CONNECT = "_adb_secure_connect._tcp.local.";
+    static final String ADB_CONNECT = "_adb._tcp.local.";
     static final String TLS_PAIR = "_adb-tls-pairing._tcp.local.";
     static final String SECURE_PAIR = "_adb-tls-pairing._tcp.local.";
     static final String SETTINGS = "com.android.settings";
@@ -136,6 +140,8 @@ public class gotosettings_adb extends Activity {
             outputData += "Reading: "+storage.getAbsolutePath()+"\n";
             scrollOutput();
             File[] files = storage.listFiles();
+            if (files == null)
+                return;
             Arrays.sort(files);
             int n = 0;
             TableRow row = null;
@@ -195,17 +201,31 @@ public class gotosettings_adb extends Activity {
     protected void onStart() {
         super.onStart();
 
+
         pressOpen.setVisibility(View.INVISIBLE);
 
         connectMode = CONNECT_UNKNOWN;
 
         checkPermissions();
-        enableWiFiADB(false);
-        updateAddressPort();
-        listen();
         outputData = "";
         buttonLines.clear();
         scriptsTable.removeAllViews();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int oldPort = port;
+                if (adbrun("adb connect 127.0.0.1:5555")) {
+                    Log.v(TAG, "connected successfully to 5555");
+                    port = 5555;
+                    updateAddressPort();
+                }
+                else {
+                    enableWiFiADB(false);
+                }
+            }
+        }).start();
+        updateAddressPort();
+        listen();
         addButtons();
     }
 
@@ -260,8 +280,13 @@ public class gotosettings_adb extends Activity {
         if (! wifi() ) {
             Log.v(TAG, "enabling wifi");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Toast.makeText(this, "Please activate WiFi first", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(gotosettings_adb.this, "Please activate WiFi first", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
+                    }
+                });
                 return;
             }
             else {
@@ -298,14 +323,14 @@ public class gotosettings_adb extends Activity {
         PackageManager pm = getPackageManager();
         try {
             Intent i = pm.getLaunchIntentForPackage(SETTINGS);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
             startActivity(i);
         }
         catch(Exception e) {
             Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                     Uri.parse("package:" + SETTINGS));
             i.setPackage(SETTINGS);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
             startActivity(i);
             pressOpen.setVisibility(View.VISIBLE);
             pressOpen.postDelayed(new Runnable() {
@@ -336,8 +361,8 @@ public class gotosettings_adb extends Activity {
             catch(Exception e) {}
         }
         if (jmdns != null) {
-            Log.v(TAG, "jmdns");
             try {
+                Log.v(TAG, "jmdns close");
                 jmdns.close();
             } catch (IOException e) {
             }
@@ -345,11 +370,35 @@ public class gotosettings_adb extends Activity {
         jmdns = null;
     }
 
+    private boolean isLocal(InetAddress[] hosts) {
+        for (int i=0;i<hosts.length;i++)
+            if (hosts[i].isLoopbackAddress())
+                return true;
+
+        try {
+            Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+            while (nis.hasMoreElements()) {
+                NetworkInterface ni = nis.nextElement();
+                Enumeration<InetAddress> addrs = ni.getInetAddresses();
+                while (addrs.hasMoreElements()) {
+                    InetAddress addr = addrs.nextElement();
+                    for (int i=0;i<hosts.length;i++)
+                        if (hosts[i].equals(addr))
+                            return true;
+                }
+            }
+        } catch (SocketException e) {
+            return false;
+        }
+        return false;
+    }
+
     public void listen() {
         closeListen();
+        Log.v(TAG, "opening jmdns");
         if (lock == null) {
             lock = wifiManager.createMulticastLock("jmdns_multicast_lock");
-            lock.setReferenceCounted(true);
+            lock.setReferenceCounted(false);
             lock.acquire();
         }
         if (serviceListener == null)
@@ -371,7 +420,10 @@ public class gotosettings_adb extends Activity {
                 @Override
                 public void serviceResolved(ServiceEvent event) {
                     InetAddress[] hosts = event.getInfo().getInetAddresses();
-                    if (hosts[0].equals(address)) {
+                    if (isLocal(hosts)) {
+//                        for (int i=0;i<hosts.length;i++)
+//                            outputData += ""+hosts[i].getHostName()+"\n";
+//                        scrollOutput();
                         String t = event.getType();
                         Log.v(TAG, t);
                         if (t.equals(SECURE_PAIR) || t.equals(TLS_PAIR)) {
@@ -379,66 +431,39 @@ public class gotosettings_adb extends Activity {
                             updateAddressPort();
                         }
                         else {
-                            port = event.getInfo().getPort();
+                            int p = event.getInfo().getPort();
+                            if (port != 5555)
+                                port = p;
+//                            outputData += t+" "+p+"\n";
+//                            scrollOutput();
 //                            closeListen();
                             updateAddressPort();
                         }
                     }
                 }
+
             };
 
-        listeningThread = new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                while (listening) {
                     try {
-                        int ip = -1;
-                        if (Settings.Global.getInt(
-                                getContentResolver(),
-                                "adb_wifi_enabled",0) == 1 && wifi()) {
-                            WifiInfo connInfo = wifiManager.getConnectionInfo();
-                            if (connInfo.getBSSID() != null) {
-                                ip = connInfo.getIpAddress();
-                            }
-                            Log.v(TAG, "ip "+ip);
-                        }
-                        if (ip != -1) {
-                            address = InetAddress.getByAddress(new byte[] { (byte)(ip&0xff),
-                                    (byte)((ip>>8)&0xff),
-                                    (byte)((ip>>16)&0xff),
-                                    (byte)((ip>>24)&0xff) });
-                            jmdns = JmDNS.create(address);
-                            Log.v(TAG, "jmdns");
-                            jmdns.addServiceListener(TLS_CONNECT, serviceListener);
-                            jmdns.addServiceListener(SECURE_CONNECT, serviceListener);
-                            jmdns.addServiceListener(TLS_PAIR, serviceListener);
-                            jmdns.addServiceListener(SECURE_PAIR, serviceListener);
-                            listeningThread = null;
-                            Log.v(TAG, "go");
-                            return;
-                        }
-                        else {
-                            port = -1;
-                            updateAddressPort();
-                        }
+                        address = InetAddress.getLocalHost();
+                        jmdns = JmDNS.create(address);
+                        Log.v(TAG, "jmdns start");
+                        jmdns.addServiceListener(TLS_CONNECT, serviceListener);
+                        jmdns.addServiceListener(SECURE_CONNECT, serviceListener);
+                        jmdns.addServiceListener(ADB_CONNECT, serviceListener);
+                        jmdns.addServiceListener(TLS_PAIR, serviceListener);
+                        jmdns.addServiceListener(SECURE_PAIR, serviceListener);
+                        listeningThread = null;
+                        Log.v(TAG, "go");
                     }
                     catch (IOException e) {
-                    }
-                    if (jmdns != null) {
-                        try {
-                            jmdns.close();
-                        } catch (IOException e) {
-                        }
-                    }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
+                        Log.v(TAG, ""+e);
                     }
                 }
-            }
-        });
-        listening = true;
-        listeningThread.start();
+        }).start();
 
     }
 
@@ -507,7 +532,7 @@ public class gotosettings_adb extends Activity {
         }
     }
 
-    private void adbrun_array(String[] cmds) {
+    private boolean adbrun_array(String[] cmds) {
         for (String cmd : cmds) {
             if (cmd == null || cmd.length() == 0)
                 continue;
@@ -533,7 +558,7 @@ public class gotosettings_adb extends Activity {
             try {
                 output = builder.start().getInputStream();
             } catch (IOException e) {
-                return;
+                return false;
             }
             BufferedReader r = new BufferedReader(new InputStreamReader(output));
             while (true) {
@@ -550,7 +575,7 @@ public class gotosettings_adb extends Activity {
                             connectMode = CONNECT_FAILED;
                     }
                 } catch (IOException e) {
-                    return;
+                    return false;
                 }
                 if (line != null) {
                     outputData += line + "\n";
@@ -559,14 +584,17 @@ public class gotosettings_adb extends Activity {
                 else
                     break;
             }
-            if (connecting && connectMode == CONNECT_FAILED)
-                break;
+            if (connecting && connectMode == CONNECT_FAILED) {
+                updateAddressPort();
+                return false;
+            }
         }
         updateAddressPort();
+        return true;
     }
 
-    private void adbrun(String... cmds) {
-        adbrun((String[])cmds);
+    private boolean adbrun(String... cmds) {
+        return adbrun_array((String[])cmds);
     }
 
     private void scrollOutput() {
