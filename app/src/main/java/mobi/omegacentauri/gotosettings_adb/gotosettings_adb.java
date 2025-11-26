@@ -1,5 +1,7 @@
 package mobi.omegacentauri.gotosettings_adb;
 
+// TODO: tcpip 5555 optional
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -180,7 +182,17 @@ public class gotosettings_adb extends Activity {
 
     private void runScript(File f) {
         List<String> cmds = new ArrayList<>();
-        cmds.add("adb connect "+getName(port));
+        if (!adbrun("adb connect "+getName(port)))
+            return;
+        if (port != 5555) {
+            adbrun("adb tcpip 5555");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+            }
+            if (adbrun("adb connect "+getName(5555)))
+                port = 5555;
+        }
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             while(true) {
@@ -192,7 +204,10 @@ public class gotosettings_adb extends Activity {
                 }
                 cmds.add(line);
             }
-            adbrun_array(cmds.toArray(new String[0]));
+            if (adbrun_array(cmds.toArray(new String[0]))) {
+                port = 5555;
+                updateAddressPort();
+            }
         } catch (IOException e) {
         }
     }
@@ -217,11 +232,12 @@ public class gotosettings_adb extends Activity {
                 if (adbrun("adb connect 127.0.0.1:5555")) {
                     Log.v(TAG, "connected successfully to 5555");
                     port = 5555;
-                    updateAddressPort();
                 }
                 else {
+                    connectMode = CONNECT_UNKNOWN;
                     enableWiFiADB(false);
                 }
+                updateAddressPort();
             }
         }).start();
         updateAddressPort();
@@ -632,6 +648,7 @@ public class gotosettings_adb extends Activity {
         String cmd2 = "adb pair "+"127.0.0.1"/*address.getHostName()*/+":"+pairPortField.getText()+" "+String.valueOf(pinField.getText());
         String cmd3 = "adb connect " + getName(port);
         String cmd4 = ADB_GRANT;
+        String cmd5 = "adb tcpip 5555";
 
         new Thread(new Runnable() {
             @Override
@@ -639,7 +656,7 @@ public class gotosettings_adb extends Activity {
                 if (port < 0)
                     adbrun(cmd1,cmd2);
                 else
-                    adbrun(cmd1,cmd2,cmd3,cmd4);
+                    adbrun(cmd1,cmd2,cmd3,cmd4,cmd5);
 //                checkPermissions();
                 pairPort = -1;
                 updateAddressPort();
