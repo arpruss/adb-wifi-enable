@@ -1,6 +1,7 @@
 package mobi.omegacentauri.gotosettings_adb;
 
 // TODO: tcpip 5555 optional
+// TODO: if 5555 is really old, use new port?
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -184,15 +185,6 @@ public class gotosettings_adb extends Activity {
         List<String> cmds = new ArrayList<>();
         if (!adbrun("adb connect "+getName(port)))
             return;
-        if (port != 5555) {
-            adbrun("adb tcpip 5555");
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-            }
-            if (adbrun("adb connect "+getName(5555)))
-                port = 5555;
-        }
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             while(true) {
@@ -215,7 +207,6 @@ public class gotosettings_adb extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-
 
         pressOpen.setVisibility(View.INVISIBLE);
 
@@ -301,6 +292,7 @@ public class gotosettings_adb extends Activity {
                     public void run() {
                         Toast.makeText(gotosettings_adb.this, "Please activate WiFi first", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
+                        startActivity(new Intent("com.oculus.action.WIFI_SETTINGS"));
                     }
                 });
                 return;
@@ -448,11 +440,13 @@ public class gotosettings_adb extends Activity {
                         }
                         else {
                             int p = event.getInfo().getPort();
-                            if (port != 5555)
-                                port = p;
 //                            outputData += t+" "+p+"\n";
 //                            scrollOutput();
-//                            closeListen();
+                            if (port != 5555) {
+                                port = p;
+                                if (adbrun("adb connect 127.0.0.1:"+port))
+                                    adbrun("adb -s 127.0.0.1:"+port+" tcpip 5555");
+                            }
                             updateAddressPort();
                         }
                     }
