@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -58,8 +59,10 @@ public class gotosettings_adb extends Activity {
     static final String SETTINGS = "com.android.settings";
     static final String ADB_GRANT = "adb shell pm grant mobi.omegacentauri.gotosettings_adb android.permission.WRITE_SECURE_SETTINGS";
     static final int BUTTONS_PER_LINE = 4;
+    static final int OUT_OF_DATE_PORT_MILLIS = 10000;
+    static InetAddress address = InetAddress.getLoopbackAddress();
+    Ports ports = new Ports();
 
-    InetAddress address = null;
     int port = -1;
     int pairPort = -1;
     JmDNS jmdns = null;
@@ -175,15 +178,12 @@ public class gotosettings_adb extends Activity {
     }
 
     String getName(int port) {
-        if (address != null)
-            return "127.0.0.1:"+port; //address.getHostName()
-        else
-            return "127.0.0.1:"+port;
+        return "127.0.0.1:"+port;
     }
 
     private void runScript(File f) {
         List<String> cmds = new ArrayList<>();
-        if (!adbrun("adb connect "+getName(port)))
+        if (!adbConnect(port))
             return;
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
@@ -220,7 +220,7 @@ public class gotosettings_adb extends Activity {
             @Override
             public void run() {
                 int oldPort = port;
-                if (adbrun("adb connect 127.0.0.1:5555")) {
+                if (adbConnect(5555)) {
                     Log.v(TAG, "connected successfully to 5555");
                     port = 5555;
                 }
@@ -291,8 +291,13 @@ public class gotosettings_adb extends Activity {
                     @Override
                     public void run() {
                         Toast.makeText(gotosettings_adb.this, "Please activate WiFi first", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
-                        startActivity(new Intent("com.oculus.action.WIFI_SETTINGS"));
+                        try {
+                            startActivity(new Intent("com.oculus.action.WIFI_SETTINGS"));
+                        } catch(Exception e) {
+                            try {
+                                startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
+                            } catch(Exception e2) {}
+                        }
                     }
                 });
                 return;
@@ -433,22 +438,28 @@ public class gotosettings_adb extends Activity {
 //                            outputData += ""+hosts[i].getHostName()+"\n";
 //                        scrollOutput();
                         String t = event.getType();
-                        Log.v(TAG, t);
+                        int p = event.getInfo().getPort();
+                        Log.v(TAG, t+" "+p);
                         if (t.equals(SECURE_PAIR) || t.equals(TLS_PAIR)) {
-                            pairPort = event.getInfo().getPort();
-                            updateAddressPort();
+                            pairPort = p;
                         }
                         else {
-                            int p = event.getInfo().getPort();
-//                            outputData += t+" "+p+"\n";
-//                            scrollOutput();
-                            if (port != 5555) {
-                                port = p;
-                                if (adbrun("adb connect 127.0.0.1:"+port))
-                                    adbrun("adb -s 127.0.0.1:"+port+" tcpip 5555");
+                            if (p != 5555) {
+                                long time5555 = ports.getPortTime(5555);
+                                if (time5555 < 0 || System.currentTimeMillis() > time5555 + OUT_OF_DATE_PORT_MILLIS) {
+                                    if (adbConnect(p)) {
+                                        adbrun("adb -s 127.0.0.1:" + p + " tcpip 5555");
+                                        adbrun("adb disconnect 127.0.0.1:" + p);
+                                    }
+                                }
+                                if (port != 5555)
+                                    port = p;
                             }
-                            updateAddressPort();
+                            ports.update(p);
+                            if (connectMode == CONNECT_FAILED && p == 5555)
+                                adbConnect(p);
                         }
+                        updateAddressPort();
                     }
                 }
 
@@ -475,6 +486,10 @@ public class gotosettings_adb extends Activity {
                 }
         }).start();
 
+    }
+
+    private boolean adbConnect(int p) {
+        return adbrun("adb connect 127.0.0.1:"+p);
     }
 
     private void updateAddressPort() {
@@ -553,6 +568,16 @@ public class gotosettings_adb extends Activity {
             outputData += ">" + cmd + "\n";
             scrollOutput();
             boolean connecting = cmd.substring(4).startsWith("connect ");
+            int connectingPort = -1;
+            if (connecting) {
+                int index = cmd.lastIndexOf(":");
+                if (index >= 0) {
+                    try {
+                        connectingPort = Integer.parseInt(cmd.substring(index+1));
+                    }
+                    catch(NumberFormatException e) {}
+                }
+            }
             if (connecting) {
                 Log.v(TAG, "connecting");
                 connectMode = CONNECT_UNKNOWN;
@@ -579,6 +604,7 @@ public class gotosettings_adb extends Activity {
                         if (line.startsWith("connected to") || line.startsWith("already connected")) {
                             Log.v(TAG, "success");
                             connectMode = CONNECT_SUCCESS;
+                            ports.update(connectingPort);
                         }
                         else if (line.toLowerCase().contains("cannot connect") ||
                             line.toLowerCase().contains("failed"))
@@ -639,7 +665,7 @@ public class gotosettings_adb extends Activity {
 
     public void pair(View view) {
         String cmd1 = "adb kill-server";
-        String cmd2 = "adb pair "+"127.0.0.1"/*address.getHostName()*/+":"+pairPortField.getText()+" "+String.valueOf(pinField.getText());
+        String cmd2 = "adb pair "+"127.0.0.1"+":"+pairPortField.getText()+" "+String.valueOf(pinField.getText());
         String cmd3 = "adb connect " + getName(port);
         String cmd4 = ADB_GRANT;
         String cmd5 = "adb tcpip 5555";
@@ -702,5 +728,47 @@ public class gotosettings_adb extends Activity {
     private void key(String number) {
         CharSequence t = pinField.getText();
         pinField.setText(t+number);
+        Ports z;
     }
+
+    static class Ports extends ArrayList<PortTime> {
+        PortTime getLatest() {
+            if (this.size() > 0)
+                return this.get(this.size()-1);
+            else
+                return null;
+        }
+
+        long getPortTime(int port) {
+            for (PortTime pt : this) {
+                if (pt.port == port)
+                    return pt.time;
+            }
+            return -1;
+        }
+
+        void update(int port) {
+            if (port < 0)
+                return;
+            long t = System.currentTimeMillis();
+            for (PortTime pt : this) {
+                if (pt.port == port) {
+                    this.remove(pt);
+                    break;
+                }
+            }
+            Log.v(TAG, "update "+port+" "+t);
+            this.add(new PortTime(port, t));
+        }
+    }
+
+    static class PortTime {
+        int port;
+        long time;
+
+        public PortTime(int _port, long _time) {
+            port = _port;
+            time = _time;
+        }
+    };
 }
