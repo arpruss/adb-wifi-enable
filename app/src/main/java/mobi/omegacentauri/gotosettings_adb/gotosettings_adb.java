@@ -1,7 +1,6 @@
 package mobi.omegacentauri.gotosettings_adb;
 
 // TODO: tcpip 5555 optional
-// TODO: if 5555 is really old, use new port?
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -80,7 +79,6 @@ public class gotosettings_adb extends Activity {
     private static final int CONNECT_UNKNOWN = 0;
     private static final int CONNECT_SUCCESS = 1;
     private ServiceListener serviceListener;
-    private Thread listeningThread = null;
     private TextView adbText;
     private Button pairButton;
     private TextView pinField;
@@ -183,8 +181,10 @@ public class gotosettings_adb extends Activity {
 
     private void runScript(File f) {
         List<String> cmds = new ArrayList<>();
+
         if (!adbConnect(port))
             return;
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             while(true) {
@@ -196,10 +196,8 @@ public class gotosettings_adb extends Activity {
                 }
                 cmds.add(line);
             }
-            if (adbrun_array(cmds.toArray(new String[0]))) {
-                port = 5555;
-                updateAddressPort();
-            }
+            adbrun_array(cmds.toArray(new String[0]));
+            updateAddressPort();
         } catch (IOException e) {
         }
     }
@@ -359,19 +357,11 @@ public class gotosettings_adb extends Activity {
     }
 
     public void closeListen() {
-        Log.v(TAG, "closing");
+        Log.v(TAG, "closing listening");
         if (lock != null) {
-            Log.v(TAG, "rel");
+            Log.v(TAG, "releasing lock");
             lock.release();
             lock = null;
-        }
-        if (listeningThread != null) {
-            Log.v(TAG, "stop");
-            listening = false;
-            try {
-                listeningThread.stop();
-            }
-            catch(Exception e) {}
         }
         if (jmdns != null) {
             try {
@@ -434,9 +424,6 @@ public class gotosettings_adb extends Activity {
                 public void serviceResolved(ServiceEvent event) {
                     InetAddress[] hosts = event.getInfo().getInetAddresses();
                     if (isLocal(hosts)) {
-//                        for (int i=0;i<hosts.length;i++)
-//                            outputData += ""+hosts[i].getHostName()+"\n";
-//                        scrollOutput();
                         String t = event.getType();
                         int p = event.getInfo().getPort();
                         Log.v(TAG, t+" "+p);
@@ -448,12 +435,15 @@ public class gotosettings_adb extends Activity {
                                 long time5555 = ports.getPortTime(5555);
                                 if (time5555 < 0 || System.currentTimeMillis() > time5555 + OUT_OF_DATE_PORT_MILLIS) {
                                     if (adbConnect(p)) {
+                                        if (port != 5555)
+                                            port = p;
                                         adbrun("adb -s 127.0.0.1:" + p + " tcpip 5555");
                                         adbrun("adb disconnect 127.0.0.1:" + p);
                                     }
                                 }
-                                if (port != 5555)
-                                    port = p;
+                            }
+                            else {
+                                port = p;
                             }
                             ports.update(p);
                             if (connectMode == CONNECT_FAILED && p == 5555)
@@ -477,7 +467,6 @@ public class gotosettings_adb extends Activity {
                         jmdns.addServiceListener(ADB_CONNECT, serviceListener);
                         jmdns.addServiceListener(TLS_PAIR, serviceListener);
                         jmdns.addServiceListener(SECURE_PAIR, serviceListener);
-                        listeningThread = null;
                         Log.v(TAG, "go");
                     }
                     catch (IOException e) {
@@ -489,7 +478,7 @@ public class gotosettings_adb extends Activity {
     }
 
     private boolean adbConnect(int p) {
-        return adbrun("adb connect 127.0.0.1:"+p);
+        return adbrun("adb connect "+getName(p));
     }
 
     private void updateAddressPort() {
@@ -604,6 +593,7 @@ public class gotosettings_adb extends Activity {
                         if (line.startsWith("connected to") || line.startsWith("already connected")) {
                             Log.v(TAG, "success");
                             connectMode = CONNECT_SUCCESS;
+                            port = connectingPort;
                             ports.update(connectingPort);
                         }
                         else if (line.toLowerCase().contains("cannot connect") ||
