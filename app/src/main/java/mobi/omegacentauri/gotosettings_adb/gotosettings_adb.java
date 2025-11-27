@@ -30,10 +30,13 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -136,7 +139,34 @@ public class gotosettings_adb extends Activity {
         });
     }
 
-    @SuppressLint("NewApi")
+    void createFiles() {
+        try {
+            String[] files = getAssets().list("adbscripts");
+            for (String f : files)
+                copyAsset("adbscripts/"+f,
+                        new File(Environment.getExternalStorageDirectory() + "/adbscripts/"+f));
+        } catch (IOException e) {
+        }
+
+    }
+
+    private void copyAsset(String inPath, File outFile) {
+        byte buffer[] = new byte[16384];
+        try {
+            InputStream in = getAssets().open(inPath);
+            OutputStream out = new FileOutputStream(outFile);
+            while (true) {
+                int count = in.read(buffer);
+                if (count <= 0)
+                    break;
+                out.write(buffer, 0, count);
+            }
+            out.close();
+            in.close();
+        } catch (IOException e) {
+        }
+    }
+
     void addButtons() {
         Button b;
         try {
@@ -145,7 +175,7 @@ public class gotosettings_adb extends Activity {
             scrollOutput();
             File[] files = storage.listFiles();
             if (files == null)
-                return;
+                createFiles();
             Arrays.sort(files);
             int n = 0;
             TableRow row = null;
