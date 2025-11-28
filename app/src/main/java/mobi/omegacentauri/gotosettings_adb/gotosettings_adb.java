@@ -142,9 +142,14 @@ public class gotosettings_adb extends Activity {
     void createFiles() {
         try {
             String[] files = getAssets().list("adbscripts");
+            File outDir = new File(Environment.getExternalStorageDirectory() + "/adbscripts");
+            try {
+                outDir.mkdir();
+            }
+            catch (Exception e) {}
             for (String f : files)
                 copyAsset("adbscripts/"+f,
-                        new File(Environment.getExternalStorageDirectory() + "/adbscripts/"+f));
+                        new File(outDir.getPath()+"/"+f));
         } catch (IOException e) {
         }
 
@@ -174,8 +179,15 @@ public class gotosettings_adb extends Activity {
             outputData += "Reading: "+storage.getAbsolutePath()+"\n";
             scrollOutput();
             File[] files = storage.listFiles();
-            if (files == null)
+            if (files == null) {
                 createFiles();
+                files = storage.listFiles();
+                if (files == null) {
+                    outputData += "No scripts found.\n";
+                    scrollOutput();
+                    return;
+                }
+            }
             Arrays.sort(files);
             int n = 0;
             TableRow row = null;
