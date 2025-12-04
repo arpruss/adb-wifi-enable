@@ -1,11 +1,67 @@
-Error parsing power mitigation config '%s' from sysprop 'debug.oculus.powerMitigations': %s
-Forcing CPU level from debug.oculus.cpuLevel
-Forcing GPU level from debug.oculus.gpuLevel
-Invalid debug.oculus.frontbufferHeight value, use 1080, 1440 or 2160
-debug.oculus.
+debug.oculus.aadt.disable
+debug.oculus.aadt.log
+debug.oculus.aadt.override
+debug.oculus.adaclocks.force
+debug.oculus.adaclocks.lower
+debug.oculus.adaclocks.lowerCpu
+debug.oculus.adaclocks.lowerGpu
+debug.oculus.adaptiveRefreshRate
+debug.oculus.adaptiveRefreshRateLog
+debug.oculus.adaptiveSpaceWarp
+debug.oculus.afd.left.diopter_max
+debug.oculus.afd.left.diopter_min
+debug.oculus.afd.left.lens_pos_mm_max
+debug.oculus.afd.left.lens_pos_mm_min
+debug.oculus.afd.right.diopter_max
+debug.oculus.afd.right.diopter_min
+debug.oculus.afd.right.lens_pos_mm_max
+debug.oculus.afd.right.lens_pos_mm_min
+debug.oculus.airlink.logger
+debug.oculus.allowDynresGPUBoost
+debug.oculus.allowedLayers
+debug.oculus.allowGPU5
+debug.oculus.allRefreshRates
+debug.oculus.anamorphic
+debug.oculus.anamorphic.et
+debug.oculus.anamorphic.focal
+debug.oculus.anamorphic.formula
+debug.oculus.anamorphic.fovea
+debug.oculus.anamorphic.foveaDegrees
+debug.oculus.anamorphic.frd
+debug.oculus.anamorphic.rate
+debug.oculus.anamorphic.snap
+debug.oculus.apertureWarpMode
+debug.oculus.applyViewCalibration
+debug.oculus.appsw.aligned
+debug.oculus.appsw.depth
+debug.oculus.appsw.prewarp
+debug.oculus.appsw.prewarp_scale
+debug.oculus.appsw.refine
+debug.oculus.arvrPlatformModeOverride
+debug.oculus.assistant.automation
+debug.oculus.aswDLimit
+debug.oculus.aswELimit
 debug.oculus.ASWPreview
 debug.oculus.AutoDisablePhaseSync
+debug.oculus.autoDriverApp
+debug.oculus.autoDriverController
+debug.oculus.autoDriverMode
+debug.oculus.autoDriverPlaybackHeadMode
+debug.oculus.avalanche.disable_speed_test_cache
+debug.oculus.batterySaverTargetWatts
 debug.oculus.BeginFrameLoad
+debug.oculus.blackScreenDetector
+debug.oculus.blackScreenDetector.log
+debug.oculus.blackScreenDetector.reportThreshold
+debug.oculus.blackScreenDetector.threshold
+debug.oculus.blurColor
+debug.oculus.bodyApiCmd
+debug.oculus.bodyApiForceFullBody
+debug.oculus.bodyApiLogQualityTelemetryMetrics
+debug.oculus.bodypose.server
+debug.oculus.brightness.logging
+debug.oculus.brightness.oscillateBacklightScale
+debug.oculus.buildBaseShadersForMask
 debug.oculus.CABC.apl
 debug.oculus.CABC.clip
 debug.oculus.CABC.dump
@@ -26,95 +82,14 @@ debug.oculus.CameraPhaseSync.Buffer
 debug.oculus.CameraPhaseSync.Enabled
 debug.oculus.CameraPhaseSync.ForceOffset
 debug.oculus.CameraPhaseSync.UpdateInterval
-debug.oculus.DisableEarlyRetire
-debug.oculus.EnableDebugInterstitialBlackFrame
-debug.oculus.EnableEnvironmentAdaptation
-debug.oculus.EnvironmentAdaptation.brightness
-debug.oculus.EnvironmentAdaptation.brightness_duration
-debug.oculus.EnvironmentAdaptation.brightness_end
-debug.oculus.EnvironmentAdaptation.brightness_start
-debug.oculus.EnvironmentAdaptation.brightness_strength
-debug.oculus.EnvironmentAdaptation.color
-debug.oculus.EnvironmentAdaptation.color_duration
-debug.oculus.EnvironmentAdaptation.color_end
-debug.oculus.EnvironmentAdaptation.color_start
-debug.oculus.EnvironmentAdaptation.color_strength
-debug.oculus.EnvironmentAdaptation.init_brightness_transition
-debug.oculus.EnvironmentAdaptation.init_color_transition
-debug.oculus.FrameSyncLog
-debug.oculus.GpuFrameLoad
-debug.oculus.MVOverlay
-debug.oculus.MVOverlay.Alpha
-debug.oculus.MVOverlay.scale
-debug.oculus.PadMax
-debug.oculus.PadMin
-debug.oculus.PhaseSyncDisableForPackage
-debug.oculus.PhaseSyncLog
-debug.oculus.STD
-debug.oculus.TD.dropPerMinute
-debug.oculus.TD.enable
-debug.oculus.TD.gainLimit
-debug.oculus.TFC.numCols
-debug.oculus.TFC.numRows
-debug.oculus.TFC.visualizeTiles
-debug.oculus.VrRuntimeClient.copyVulkanSwapChainToGraphicBuffer.enable
-debug.oculus.VrRuntimeClient.copyVulkanSwapChainToGraphicBufferLogging.enable
-debug.oculus.WaitFrameLoad
-debug.oculus.aadt.disable
-debug.oculus.aadt.log
-debug.oculus.aadt.override
-debug.oculus.adaclocks.force
-debug.oculus.adaclocks.lower
-debug.oculus.adaclocks.lowerCpu
-debug.oculus.adaclocks.lowerGpu
-debug.oculus.adaptiveRefreshRate
-debug.oculus.adaptiveRefreshRateLog
-debug.oculus.adaptiveSpaceWarp
-debug.oculus.afd.left.diopter_max
-debug.oculus.afd.left.diopter_min
-debug.oculus.afd.left.lens_pos_mm_max
-debug.oculus.afd.left.lens_pos_mm_min
-debug.oculus.afd.right.diopter_max
-debug.oculus.afd.right.diopter_min
-debug.oculus.afd.right.lens_pos_mm_max
-debug.oculus.afd.right.lens_pos_mm_min
-debug.oculus.allRefreshRates
-debug.oculus.allowDynresGPUBoost
-debug.oculus.allowGPU5
-debug.oculus.allowedLayers
-debug.oculus.anamorphic
-debug.oculus.anamorphic.et
-debug.oculus.anamorphic.focal
-debug.oculus.anamorphic.formula
-debug.oculus.anamorphic.fovea
-debug.oculus.anamorphic.foveaDegrees
-debug.oculus.anamorphic.frd
-debug.oculus.anamorphic.rate
-debug.oculus.anamorphic.snap
-debug.oculus.apertureWarpMode
-debug.oculus.applyViewCalibration
-debug.oculus.appsw.aligned
-debug.oculus.appsw.depth
-debug.oculus.appsw.prewarp
-debug.oculus.appsw.prewarp_scale
-debug.oculus.appsw.refine
-debug.oculus.arvrPlatformModeOverride
-debug.oculus.aswDLimit
-debug.oculus.aswELimit
-debug.oculus.autoDriverApp
-debug.oculus.autoDriverController
-debug.oculus.autoDriverMode
-debug.oculus.autoDriverPlaybackHeadMode
-debug.oculus.batterySaverTargetWatts
-debug.oculus.blackScreenDetector
-debug.oculus.blackScreenDetector.log
-debug.oculus.blackScreenDetector.reportThreshold
-debug.oculus.blackScreenDetector.threshold
-debug.oculus.blurColor
-debug.oculus.brightness.logging
-debug.oculus.brightness.oscillateBacklightScale
-debug.oculus.buildBaseShadersForMask
+debug.oculus.capture.always_up
 debug.oculus.capture.asyncSwapBuffers
+debug.oculus.capture.bitrate
+debug.oculus.capture.fps
+debug.oculus.capture.height
+debug.oculus.capture.roll_angle_stabil_params = Requires 2 params
+debug.oculus.capture.rotation_3_dof_stabil_params = Requires 4 params
+debug.oculus.capture.width
 debug.oculus.captureRawColor
 debug.oculus.cgd.forceDisableBicubicSampler
 debug.oculus.clearColor
@@ -132,11 +107,24 @@ debug.oculus.command_line_media_capture
 debug.oculus.compositorGpuApi
 debug.oculus.cvpasw
 debug.oculus.cvpasw.debug
+debug.oculus.cvpasw.filter.threshold
+debug.oculus.cvpasw.filter.type
 debug.oculus.cvpasw.mlfilter
 debug.oculus.cvpasw.mlsnap
+debug.oculus.cvpasw.mvdist
 debug.oculus.cvpasw.mvType
+debug.oculus.cvpasw.mvweights.w
+debug.oculus.cvpasw.mvweights.x
+debug.oculus.cvpasw.mvweights.xx
+debug.oculus.cvpasw.mvweights.y
+debug.oculus.cvpasw.mvweights.yy
+debug.oculus.cvpasw.mvweights.z
+debug.oculus.cvpasw.mvweights.zz
 debug.oculus.cvpasw.offset
 debug.oculus.cvpasw.reprojmv
+debug.oculus.cvpasw.searchx
+debug.oculus.cvpasw.searchy
+debug.oculus.cvpasw.smooth
 debug.oculus.ddc.currentVid
 debug.oculus.ddc.currentVidLeft
 debug.oculus.ddc.currentVidRight
@@ -169,82 +157,81 @@ debug.oculus.decenter_correction
 debug.oculus.deviceRegion
 debug.oculus.dgaLog
 debug.oculus.direct_projection
+debug.oculus.disable_body_conflict
+debug.oculus.disable_body_mm_conflict
+debug.oculus.disable_face_compat_check
 debug.oculus.disableACK
 debug.oculus.disableBuildBaseShader
+debug.oculus.DisableEarlyRetire
 debug.oculus.disableFrustumCheck
 debug.oculus.disableLayerMerge
 debug.oculus.disableShaderDiskReads
 debug.oculus.disableSliceTiming
-debug.oculus.disable_body_conflict
-debug.oculus.disable_body_mm_conflict
-debug.oculus.disable_face_compat_check
-debug.oculus.displayMetersH
 debug.oculus.displayMetersH = %f
-debug.oculus.displayMetersW
 debug.oculus.displayMetersW = %f
-debug.oculus.displayPixelsH
 debug.oculus.displayPixelsH = %f
-debug.oculus.displayPixelsW
 debug.oculus.displayPixelsW = %f
-debug.oculus.distBlueCAC
 debug.oculus.distBlueCAC = %s
-debug.oculus.distCacType
 debug.oculus.distCacType = AnglePoly
 debug.oculus.distCacType = ScreenBiaxPoly
 debug.oculus.distCacType = ScreenRad2Poly
 debug.oculus.distCacType = ScreenRadPoly
-debug.oculus.distCacUnit
 debug.oculus.distCacUnit = millimeter
 debug.oculus.distCacUnit = pixel
 debug.oculus.distCacUnit = screen
-debug.oculus.distCenterFileName
 debug.oculus.distCenterFileName = %s
-debug.oculus.distCurve
 debug.oculus.distCurve = CatmullRom10
 debug.oculus.distCurve = RTech16
-debug.oculus.distDeviceModel
 debug.oculus.distDeviceModel = %s
-debug.oculus.distHeadsetModel
 debug.oculus.distHeadsetModel = %s
-debug.oculus.distHeight
 debug.oculus.distHeight = %i
-debug.oculus.distK
 debug.oculus.distK = %s
-debug.oculus.distK11
 debug.oculus.distK11 = %s
-debug.oculus.distRedCAC
-debug.oculus.distRedCAC = %s
-debug.oculus.distWidth
-debug.oculus.distWidth = %i
 debug.oculus.distortion.log
 debug.oculus.distortion.wireframe
-debug.oculus.distortionFileName
 debug.oculus.distortionFileName = %s
+debug.oculus.distRedCAC = %s
+debug.oculus.distWidth = %i
 debug.oculus.dpuCac
 debug.oculus.drr
-debug.oculus.drr.angSpeedThresh
 debug.oculus.drr.angle
+debug.oculus.drr.angSpeedThresh
 debug.oculus.drr.debug
 debug.oculus.drr.haltonSamples
 debug.oculus.drr.haltonSamplesScale
 debug.oculus.drr.mode
 debug.oculus.drr.samples
 debug.oculus.dualcorecpuset
-debug.oculus.dynResScaler
 debug.oculus.dynamicResolutionLog
-debug.oculus.edgeFadeMax
+debug.oculus.dynResScaler
 debug.oculus.edgeFadeMax = %f
 debug.oculus.emergeDynRes
 debug.oculus.emergeDynResPow
+debug.oculus.enable_varifocal
+debug.oculus.enable_vulkan_validation
 debug.oculus.enableDebugInfoGazeControl
+debug.oculus.EnableDebugInterstitialBlackFrame
+debug.oculus.EnableEnvironmentAdaptation
 debug.oculus.enableFeatureThrottling
 debug.oculus.enableHighResolutionLevelOverride
 debug.oculus.enableLiveMemoryProfiling
 debug.oculus.enableMetrics
 debug.oculus.enableTelemetrySentLog
+debug.oculus.enableVideoCapture
 debug.oculus.enableXrPassthroughSpecV2
 debug.oculus.enableZsfDebug
-debug.oculus.enable_varifocal
+debug.oculus.EnvironmentAdaptation.brightness
+debug.oculus.EnvironmentAdaptation.brightness_duration
+debug.oculus.EnvironmentAdaptation.brightness_end
+debug.oculus.EnvironmentAdaptation.brightness_start
+debug.oculus.EnvironmentAdaptation.brightness_strength
+debug.oculus.EnvironmentAdaptation.color
+debug.oculus.EnvironmentAdaptation.color_duration
+debug.oculus.EnvironmentAdaptation.color_end
+debug.oculus.EnvironmentAdaptation.color_start
+debug.oculus.EnvironmentAdaptation.color_strength
+debug.oculus.EnvironmentAdaptation.init_brightness_transition
+debug.oculus.EnvironmentAdaptation.init_color_transition
 debug.oculus.et.forceEnable
 debug.oculus.et.gaze
 debug.oculus.et.gazeDistance
@@ -270,17 +257,16 @@ debug.oculus.externalvsyncevent
 debug.oculus.extraKickoffHeadroom
 debug.oculus.extraKickoffHeadroomPerClient
 debug.oculus.extraLatencyMode
-debug.oculus.eyeBufferPixelsH
 debug.oculus.eyeBufferPixelsH = %d
-debug.oculus.eyeBufferPixelsW
 debug.oculus.eyeBufferPixelsW = %d
+debug.oculus.eyetrackingCmd
 debug.oculus.face_eye_tracking_activity_expiration_duration
 debug.oculus.failUserdevChecks
-debug.oculus.fixedFOV
 debug.oculus.fixedFOV = %d
 debug.oculus.fixedLatencyInFrameInterval
-debug.oculus.fixedScreens
 debug.oculus.fixedScreens = %d
+debug.oculus.force_perf_report
+debug.oculus.force_sideload_apps_can_update
 debug.oculus.forceAdaptiveNightDisplay
 debug.oculus.forceDDC
 debug.oculus.forceDirectRenderingMode
@@ -300,9 +286,6 @@ debug.oculus.forceSpaceWarp
 debug.oculus.forceSwaps
 debug.oculus.forceThermal
 debug.oculus.forceTracing
-debug.oculus.force_perf_report
-debug.oculus.fovFileName
-debug.oculus.fovFileName = %s
 debug.oculus.foveation.dynamic
 debug.oculus.foveation.gl.cutoff
 debug.oculus.foveation.gl.gain
@@ -327,9 +310,10 @@ debug.oculus.foveationCenterOffsetLX
 debug.oculus.foveationCenterOffsetLY
 debug.oculus.foveationCenterOffsetRX
 debug.oculus.foveationCenterOffsetRY
+debug.oculus.fovFileName = %s
 debug.oculus.frameRateHysteresisSec
-debug.oculus.frontbufferHeight
-debug.oculus.frontbufferHeight = %u
+debug.oculus.FrameSyncLog
+debug.oculus.frontbufferHeight = %u [values: 1080, 1440 or 2160]
 debug.oculus.frostedGlass.backgroundHeight
 debug.oculus.frostedGlass.backgroundTaskAlternating
 debug.oculus.frostedGlass.backgroundWidth
@@ -356,17 +340,19 @@ debug.oculus.gfr.tileOffset
 debug.oculus.gfr.tileOffset.x
 debug.oculus.gfr.tileOffset.y
 debug.oculus.globalShutter
-debug.oculus.gpuInference
-debug.oculus.gpuInference.profiling
+debug.oculus.gpuasw.generateVectors
 debug.oculus.gpuasw.HighResMesh
 debug.oculus.gpuasw.MVInputHeight
 debug.oculus.gpuasw.MVInputWidth
-debug.oculus.gpuasw.generateVectors
+debug.oculus.GpuFrameLoad
+debug.oculus.gpuInference
+debug.oculus.gpuInference.profiling
+debug.oculus.graphtier
+debug.oculus.guardian_pause
 debug.oculus.halfRateDisable
 debug.oculus.halfRateRefresh
 debug.oculus.halfRateRefreshHigh
 debug.oculus.halfRateRefreshLow
-debug.oculus.headOrientationOffset
 debug.oculus.headlock
 debug.oculus.headlock.rotation.x
 debug.oculus.headlock.rotation.y
@@ -374,8 +360,8 @@ debug.oculus.headlock.rotation.z
 debug.oculus.headlock.translation.x
 debug.oculus.headlock.translation.y
 debug.oculus.headlock.translation.z
+debug.oculus.headOrientationOffset
 debug.oculus.headsetOverride
-debug.oculus.horizOffsetMeters
 debug.oculus.horizOffsetMeters = %f
 debug.oculus.ic.mlsr.server.debug
 debug.oculus.ic.mlsr.server.enable
@@ -383,26 +369,22 @@ debug.oculus.ic.mlsr.server.et
 debug.oculus.ic.mlsr.server.model
 debug.oculus.ic.mlsr.server.sharpen
 debug.oculus.ic.mlsr.server.tint
-debug.oculus.insetEdgeFade
+debug.oculus.image_debug_overlay
 debug.oculus.insetEdgeFade = %f
 debug.oculus.internalLayer.forceRenderVolumeLayer
 debug.oculus.interstitial_manager_verbose
 debug.oculus.ipd
+debug.oculus.layer_extrapolation_limit
 debug.oculus.layerFilter
 debug.oculus.layerFilter.foveate
 debug.oculus.layerFilter.overrideLayers
 debug.oculus.layerMergeCount
 debug.oculus.layerProperties
-debug.oculus.layer_extrapolation_limit
 debug.oculus.leftClocking
 debug.oculus.leftOrientation
-debug.oculus.leftRoll
 debug.oculus.leftRoll = %f
-debug.oculus.leftScreenCtr
-debug.oculus.leftScreenCtr = %s
-debug.oculus.leftTranslation
+debug.oculus.leftScreenCtr=%f, %f
 debug.oculus.leftTranslation = %s
-debug.oculus.lensSepMeters
 debug.oculus.lensSepMeters = %f
 debug.oculus.loadSimulation
 debug.oculus.localDimming
@@ -428,39 +410,46 @@ debug.oculus.lruCheckInterval
 debug.oculus.lruEntries
 debug.oculus.lruGracePeriod
 debug.oculus.maxAnisotropy
-debug.oculus.maxR
 debug.oculus.maxR = %f
 debug.oculus.memoryProfilingFrequency
-debug.oculus.metersPerTanAngCtr
 debug.oculus.metersPerTanAngCtr = %f
 debug.oculus.ml.snapshot
 debug.oculus.mlProcessor.tintOutset
 debug.oculus.mlProcessor.verticalOffset
+debug.oculus.mqd.off
 debug.oculus.msaaLevel
 debug.oculus.multiclientMetrics
+debug.oculus.MVOverlay
+debug.oculus.MVOverlay.Alpha
+debug.oculus.MVOverlay.scale
 debug.oculus.navigatorAppThrottling
 debug.oculus.navigatorBlurBackground
 debug.oculus.navigatorDimBackground
 debug.oculus.noIpdNotifier
 debug.oculus.numShaderHelpers
+debug.oculus.object_collider_functional_surface_override
+debug.oculus.on_trim_memory.running_critical
 debug.oculus.openXRBoostCycle
-debug.oculus.orientHeadToEye
 debug.oculus.orientHeadToEye = %d
 debug.oculus.orionSimulatorClientEnabled
 debug.oculus.ossplash.backgroundOverride
 debug.oculus.ossplash.ratio
 debug.oculus.overrideMRHM
 debug.oculus.overrideTrueSightCameraCCT
+debug.oculus.PadMax
+debug.oculus.PadMin
 debug.oculus.panelAntiAliasing
 debug.oculus.panelParallax
 debug.oculus.panelShading
 debug.oculus.panelShading.drawDebug
 debug.oculus.panelShading.force
+debug.oculus.people.
 debug.oculus.perChannelTW
 debug.oculus.perChannelTW_DeltaB
 debug.oculus.perChannelTW_DeltaR
 debug.oculus.perf_perCore
 debug.oculus.perf_report
+debug.oculus.perf_utilisation
 debug.oculus.perfmgr_version
 debug.oculus.pfr.applyDebugColorOffset
 debug.oculus.pfr.autofilter
@@ -476,8 +465,9 @@ debug.oculus.pfr.supersample.kd
 debug.oculus.pfr.supersample.ki
 debug.oculus.pfr.supersample.kp
 debug.oculus.phaseSync
+debug.oculus.PhaseSyncDisableForPackage
+debug.oculus.PhaseSyncLog
 debug.oculus.phaseSyncSim
-debug.oculus.postProcess.enable
 debug.oculus.postprocess.anamorphic
 debug.oculus.postprocess.anamorphic.foveaSampler
 debug.oculus.postprocess.anamorphic.hdup
@@ -485,36 +475,36 @@ debug.oculus.postprocess.anamorphic.vdup
 debug.oculus.postprocess.cac.enable
 debug.oculus.postprocess.checkerboard
 debug.oculus.postprocess.customPrograms
+debug.oculus.postProcess.enable
 debug.oculus.postprocess.foveation.gamma
 debug.oculus.postprocess.foveation.vis.enable
 debug.oculus.postprocess.fragmentShader{}
 debug.oculus.postprocess.inputFilter
-debug.oculus.postprocess.inputHeight0
 debug.oculus.postprocess.inputHeight{}
-debug.oculus.postprocess.inputWidth0
+debug.oculus.postprocess.inputHeight0
 debug.oculus.postprocess.inputWidth{}
+debug.oculus.postprocess.inputWidth0
 debug.oculus.postprocess.overlay
 debug.oculus.postprocess.skip
 debug.oculus.postprocess.vertexShader{}
 debug.oculus.powerMitigations
-debug.oculus.ptOcclusion
 debug.oculus.pt_foveation.crop_rect
 debug.oculus.pt_foveation.crop_rect_size
 debug.oculus.pt_foveation.gaze_visualization
 debug.oculus.pt_foveation.zone_blending_factor
 debug.oculus.pt_foveation.zone_visualization
 debug.oculus.ptic.bicubic
+debug.oculus.ptOcclusion
 debug.oculus.ptw
 debug.oculus.ptw.alwaysOn
 debug.oculus.quadViews
+debug.oculus.query_multiple_rooms_enabled
+debug.oculus.record-graphapi-token
 debug.oculus.refreshRate
 debug.oculus.rightClocking
 debug.oculus.rightOrientation
-debug.oculus.rightRoll
 debug.oculus.rightRoll = %f
-debug.oculus.rightScreenCtr
 debug.oculus.rightScreenCtr = %s
-debug.oculus.rightTranslation
 debug.oculus.rightTranslation = %s
 debug.oculus.rotation_correction
 debug.oculus.rtc.
@@ -531,20 +521,22 @@ debug.oculus.rtc.start
 debug.oculus.rtt2.0
 debug.oculus.scaleResRight
 debug.oculus.screenCaptureEye
+debug.oculus.show_version_gates
 debug.oculus.showAlpha
 debug.oculus.showDepth
 debug.oculus.showTanAngleGrid
-debug.oculus.show_version_gates
 debug.oculus.singlePosePred
-debug.oculus.skipSpatialPersistencePlugin
 debug.oculus.skippedLayers
+debug.oculus.skipSpatialPersistencePlugin
 debug.oculus.sliceCountY
+debug.oculus.socialplatform.notif_fetcher_interval_override
 debug.oculus.spaceWarpDebug
 debug.oculus.spaceWarpDebug.off
 debug.oculus.spaceWarpDebugLog
 debug.oculus.spaceWarpMvHeight
 debug.oculus.spaceWarpMvWidth
 debug.oculus.spaceWarpStable
+debug.oculus.STD
 debug.oculus.stinsonDynres
 debug.oculus.swapInterval
 debug.oculus.swbm
@@ -569,22 +561,28 @@ debug.oculus.taa.upscaling.tileSize
 debug.oculus.taa.vertFrag
 debug.oculus.taa.width
 debug.oculus.taaAccumCap
-debug.oculus.testTWShaders
+debug.oculus.TD.dropPerMinute
+debug.oculus.TD.enable
+debug.oculus.TD.gainLimit
 debug.oculus.testTileOrder
+debug.oculus.testTWShaders
 debug.oculus.testVsyncTiming
 debug.oculus.textureHeight
 debug.oculus.textureWidth
+debug.oculus.TFC.numCols
+debug.oculus.TFC.numRows
+debug.oculus.TFC.visualizeTiles
 debug.oculus.tradeCpuForGpu
 debug.oculus.trex_test_mode
 debug.oculus.trex_test_result
 debug.oculus.trueSightColorScale
 debug.oculus.trueSightMRHMStrength
-debug.oculus.twPoseLateLatch
 debug.oculus.twclientdbg
+debug.oculus.twPoseLateLatch
+debug.oculus.unlink_sla.deadline
 debug.oculus.useDpuHistogram
 debug.oculus.useFakeLogo
 debug.oculus.useFakeLogoForLocalization
-debug.oculus.useForwardFov
 debug.oculus.useForwardFov = %d
 debug.oculus.useFrameSync
 debug.oculus.useFrameThrottle
@@ -593,12 +591,9 @@ debug.oculus.useLayerASW
 debug.oculus.useMiramarColorspaceP3
 debug.oculus.useShaderHelpers
 debug.oculus.useSmoothedGazeForInteraction
-debug.oculus.varifocalType
 debug.oculus.varifocalType = %d
-debug.oculus.vertOffsetMeters
-debug.oculus.vertOffsetMeters = %f
-debug.oculus.verticalFlip
 debug.oculus.verticalFlip = %d
+debug.oculus.vertOffsetMeters = %f
 debug.oculus.visibilitymask.customMaskTanDegAngleSet1
 debug.oculus.visibilitymask.customMaskTanDegAngleSet2
 debug.oculus.visibilitymask.disable
@@ -608,21 +603,36 @@ debug.oculus.visibilitymask.postupdate
 debug.oculus.visualizeLayers
 debug.oculus.visualizeScreenSlices
 debug.oculus.vrapilayers
+debug.oculus.VrRuntimeClient.copyVulkanSwapChainToGraphicBuffer.enable
+debug.oculus.VrRuntimeClient.copyVulkanSwapChainToGraphicBufferLogging.enable
 debug.oculus.vrserver.gldebug
 debug.oculus.vsyncEmu
+debug.oculus.WaitFrameLoad
 debug.oculus.warpProgramCoverageThreshold
 debug.oculus.warpProgramHalfLife
 debug.oculus.xprocessSupported
-k?debug.oculus.perf_utilisation
-parsed debug.oculus.leftScreenCtr=%f, %f
+persist.debug.oculus.auto_os_update_deferral_default_override
+persist.debug.oculus.auto_os_update_feature_gk_override
+persist.debug.oculus.disable_active_ota_override
 persist.debug.oculus.disable_handpose_filtering
+persist.debug.oculus.disableota
 persist.debug.oculus.emgClient.openXRTrackingLogging
 persist.debug.oculus.enable_hand_pose_trace_logs
+persist.debug.oculus.external_ota_check_override
 persist.debug.oculus.eyeFovDown
 persist.debug.oculus.eyeFovInward
 persist.debug.oculus.eyeFovOutward
 persist.debug.oculus.eyeFovUp
+persist.debug.oculus.lying_detection.exit_horizontal_motion_threshold_cm
+persist.debug.oculus.lying_detection.exit_vertical_motion_threshold_cm
+persist.debug.oculus.maintenanceboot.override_battery_percent_threshold
+persist.debug.oculus.maintenanceboot.override_time_since_charging_threshold_sec
+persist.debug.oculus.maintenanceboot.override_time_since_last_boot_threshold_sec
+persist.debug.oculus.ota_full_update_override
+persist.debug.oculus.postota.enabled
+persist.debug.oculus.trace_ota
 persist.debug.oculus.use.persisted.custom.fov
+persist.debug.oculus.use_test_timeouts
 persist.ovr.debug.oculus.hands.logging
 persist.ovr.debug.oculus.hands.logging.sample_interval_ms
 persist.ovr.debug.oculus.hands.logging.sample_start_index
